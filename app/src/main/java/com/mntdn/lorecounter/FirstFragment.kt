@@ -1,11 +1,14 @@
 package com.mntdn.lorecounter
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import com.mntdn.lorecounter.databinding.FragmentFirstBinding
@@ -54,9 +57,34 @@ class FirstFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    fun showDialogFinish(player: Int) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        builder
+            .setMessage("Game finished!")
+            .setTitle("Player " + player.toString() + " has won!")
+            .setPositiveButton("New game") { dialog, which ->
+                // Do something.
+                resetGame()
+            }
+            .setNegativeButton("Oops") { dialog, which ->
+            }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
+    fun resetGame(){
+        loreValues[0] = 0
+        loreValues[1] = 0
+        tempAugmentation = 0
+        updateText()
+    }
+
     fun inc(player: Int){
-        if(loreValues[player - 1] >= 20)
+        if(loreValues[player - 1] == 19){
+            showDialogFinish(player)
             return
+        }
         loreValues[player - 1]++
         tempAugmentation++
         if(player == 1)
